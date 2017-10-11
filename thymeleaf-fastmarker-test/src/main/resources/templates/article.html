@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+ xmlns:fa="http://www.devefx.org/thymeleaf/fastmarker">
+    <head>
+        <title>文章详情</title>
+    </head>
+    <body>
+        <div fa:prefragment="ArticleContentPreHandler(id=${id})" style="background-color: #eee">
+            <div th:text="${article.title}">标题</div>
+            <div th:text="${article.time}">发布时间</div>
+            <div th:text="${article.author}">作者</div>
+        </div>
+        <div fa:prefragment="ArticleRelatedPreHandler(id=${id})" style="background-color: #ccc">
+            <a th:each="article : ${articles}" th:href="|/article/${article.id}|" th:text="${article.title}" href="#">文章标题</a>
+        </div>
+    </body>
+</html>
