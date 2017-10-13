@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016-2017, Youqian Yue (devefx@163.com).
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.devefx.thymeleaf.prefragment;
 
 import java.io.InputStream;
@@ -11,6 +27,7 @@ import java.util.Map;
 import org.devefx.thymeleaf.PreFragmentHandler;
 import org.devefx.thymeleaf.context.PreFragmentHandlerContent;
 import org.devefx.thymeleaf.resourceresolver.FastmarkerResourceResolver;
+import org.devefx.thymeleaf.templateresolver.FastmarkerTemplateResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.Arguments;
@@ -24,7 +41,6 @@ import org.thymeleaf.dom.Document;
 import org.thymeleaf.dom.Element;
 import org.thymeleaf.dom.Node;
 import org.thymeleaf.exceptions.TemplateInputException;
-import org.thymeleaf.resourceresolver.IResourceResolver;
 import org.thymeleaf.standard.expression.IStandardExpression;
 import org.thymeleaf.standard.expression.IStandardExpressionParser;
 import org.thymeleaf.standard.expression.StandardExpressions;
@@ -84,13 +100,11 @@ public final class PreFragment {
         final TemplateProcessingParameters templateProcessingParameters = 
                 new TemplateProcessingParameters(configuration, templateName, context);
         
-        final Document document = loadFragmentDocument(configuration, 
-                templateProcessingParameters, templateRepository, engine, preFragmentHandler);
-        
-        return document.getChildren();
+        return loadFragment(configuration, templateProcessingParameters,
+                templateRepository, engine, preFragmentHandler);
     }
     
-    protected Document loadFragmentDocument(final Configuration configuration, final TemplateProcessingParameters templateProcessingParameters,
+    protected List<Node> loadFragment(final Configuration configuration, final TemplateProcessingParameters templateProcessingParameters,
             final TemplateRepository templateRepository, final TemplateEngine engine, final PreFragmentHandler preFragmentHandler) {
         
         final Map<String,ITemplateParser> parsersByTemplateMode = new HashMap<String,ITemplateParser>(10, 1.0f);
@@ -99,7 +113,6 @@ public final class PreFragment {
         }
         
         final String templateName = templateProcessingParameters.getTemplateName();
-        final IContext context = templateProcessingParameters.getContext();
         
         TemplateResolution templateResolution = null;
         InputStream templateInputStream = null;
@@ -107,15 +120,14 @@ public final class PreFragment {
         
         for (final ITemplateResolver templateResolver : configuration.getTemplateResolvers()) {
             
-            templateResolution = templateResolver.resolveTemplate(templateProcessingParameters);
-            
-            if (templateResolution != null) {
+            if (templateResolver instanceof FastmarkerTemplateResolver) {
                 
-                final IResourceResolver resourceResolver = templateResolution.getResourceResolver();
+                templateResolution = templateResolver.resolveTemplate(templateProcessingParameters);
                 
-                if (resourceResolver instanceof FastmarkerResourceResolver) {
+                if (templateResolution != null) {
                     
-                    final FastmarkerResourceResolver resolver = (FastmarkerResourceResolver) resourceResolver;
+                    final FastmarkerResourceResolver resourceResolver =
+                            (FastmarkerResourceResolver) templateResolution.getResourceResolver();
                     
                     final String resourceName = templateResolution.getResourceName();
                     
@@ -123,9 +135,8 @@ public final class PreFragment {
                         logger.trace("[THYMELEAF][{}] Trying to resolve template \"{}\" as resource \"{}\" with resource resolver \"{}\"", new Object[] {TemplateEngine.threadIndex(), templateName, resourceName, resourceResolver.getName()});
                     }
                     
-                    templateInputStream = resolver.getResourceAsStream(templateProcessingParameters, resourceName);
+                    templateInputStream = resourceResolver.getResourceAsStream(templateProcessingParameters, resourceName);
                     
-                    // 预构建片段↓↓↓↓↓
                     if (templateInputStream == null) {
                         
                         if (logger.isTraceEnabled()) {
@@ -134,6 +145,7 @@ public final class PreFragment {
                         
                         if (arguments == null) {
                             
+                            final IContext context = templateProcessingParameters.getContext();
                             preFragmentHandler.handle(this.parameters, context);
                             
                             Document fragmentDocument = new Document();
@@ -152,11 +164,10 @@ public final class PreFragment {
                                 configuration.getTemplateModeHandler(templateMode);
                         final ITemplateWriter templateWriter = templateModeHandler.getTemplateWriter();
                         
-                        resolver.writeFragment(resourceName, arguments, templateWriter);
+                        resourceResolver.writeFragment(resourceName, arguments, templateWriter);
                         
-                        templateInputStream = resolver.getResourceAsStream(templateProcessingParameters, resourceName);
+                        templateInputStream = resourceResolver.getResourceAsStream(templateProcessingParameters, resourceName);
                     }
-                    // 预构建片段↑↑↑↑↑↑
                     
                     if (templateInputStream != null) {
                         if (logger.isDebugEnabled()) {
@@ -167,14 +178,14 @@ public final class PreFragment {
                     
                 } else {
                     
-                    templateResolution = null;
+                    if (logger.isTraceEnabled()) {
+                        logger.trace("[THYMELEAF][{}] Skipping template resolver \"{}\" for template \"{}\"", new Object[] {TemplateEngine.threadIndex(), templateResolver.getName(), templateName});
+                    }
+                    
                 }
                 
-            } else {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("[THYMELEAF][{}] Skipping template resolver \"{}\" for template \"{}\"", new Object[] {TemplateEngine.threadIndex(), templateResolver.getName(), templateName});
-                }
             }
+            
         }
         
         if (templateResolution == null || templateInputStream == null) {
@@ -217,6 +228,6 @@ public final class PreFragment {
         
         document.precompute(configuration);
         
-        return document;
+        return document.getChildren();
     }
 }

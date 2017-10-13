@@ -5,3 +5,9 @@ spring:
   thymeleaf:
     cache: false
     mode: LEGACYHTML5
+
+fastmarker:
+  thymeleaf:
+    prefix: F:/temp/
+    suffix: .html
+    mode: LEGACYHTML5

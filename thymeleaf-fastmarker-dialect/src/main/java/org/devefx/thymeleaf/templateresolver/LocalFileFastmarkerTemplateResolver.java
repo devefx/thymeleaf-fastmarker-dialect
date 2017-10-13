@@ -1,22 +1,27 @@
+/*
+ * Copyright 2016-2017, Youqian Yue (devefx@163.com).
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.devefx.thymeleaf.templateresolver;
 
 import org.devefx.thymeleaf.resourceresolver.LocalFileFastmarkerResourceResolver;
-import org.thymeleaf.exceptions.ConfigurationException;
-import org.thymeleaf.resourceresolver.IResourceResolver;
-import org.thymeleaf.templateresolver.TemplateResolver;
 
-public class LocalFileFastmarkerTemplateResolver extends TemplateResolver {
+public class LocalFileFastmarkerTemplateResolver extends FastmarkerTemplateResolver {
     
     public LocalFileFastmarkerTemplateResolver() {
         super();
-        super.setResourceResolver(new LocalFileFastmarkerResourceResolver());
-    }
-    
-    @Override
-    public void setResourceResolver(final IResourceResolver resourceResolver) {
-        throw new ConfigurationException(
-                "Cannot set a resource resolver on " + this.getClass().getName() + ". If " +
-                "you want to set your own resource resolver, use " + TemplateResolver.class.getName() + 
-                "instead");
+        setResourceResolver(new LocalFileFastmarkerResourceResolver());
     }
 }

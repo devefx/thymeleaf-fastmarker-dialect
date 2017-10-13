@@ -1,4 +1,20 @@
-package org.devefx.example.view;
+/*
+ * Copyright 2016-2017, Youqian Yue (devefx@163.com).
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.devefx.thymeleaf.spring.boot.autoconfigure.view;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -33,7 +49,7 @@ import org.thymeleaf.standard.fragment.StandardFragment;
 import org.thymeleaf.standard.fragment.StandardFragmentProcessor;
 import org.thymeleaf.standard.processor.attr.StandardFragmentAttrProcessor;
 
-public class ThymeleafView extends AbstractThymeleafView {
+public class FastMarkerThymeleafView extends AbstractThymeleafView {
 
     /*
      * If this is not null, we are using Spring 3.1+ and there is the possibility
@@ -74,7 +90,7 @@ public class ThymeleafView extends AbstractThymeleafView {
      *   Creates a new instance of <tt>ThymeleafView</tt>.
      * </p>
      */
-    protected ThymeleafView() {
+    protected FastMarkerThymeleafView() {
         super();
     }
 
@@ -87,7 +103,7 @@ public class ThymeleafView extends AbstractThymeleafView {
      * 
      * @param templateName the template name.
      */
-    protected ThymeleafView(final String templateName) {
+    protected FastMarkerThymeleafView(final String templateName) {
         super(templateName);
     }
 
@@ -105,7 +121,7 @@ public class ThymeleafView extends AbstractThymeleafView {
      *   the whole template will be processed.
      * </p>
      * <p>
-     *   Subclasses of {@link ThymeleafView} might choose not to honor this parameter,
+     *   Subclasses of {@link FastMarkerThymeleafView} might choose not to honor this parameter,
      *   disallowing the processing of template fragments.
      * </p>
      * 
@@ -131,7 +147,7 @@ public class ThymeleafView extends AbstractThymeleafView {
      *   the whole template will be processed.
      * </p>
      * <p>
-     *   Subclasses of {@link ThymeleafView} might choose not to honor this parameter,
+     *   Subclasses of {@link FastMarkerThymeleafView} might choose not to honor this parameter,
      *   disallowing the processing of template fragments.
      * </p>
      * 

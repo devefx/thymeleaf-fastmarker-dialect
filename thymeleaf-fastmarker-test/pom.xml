@@ -9,6 +9,11 @@
         <version>1.5.6.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.7</java.version>
+        <thymeleaf-fastmarker.version>1.0.0-alphal</thymeleaf-fastmarker.version>
+    </properties>
     <dependencies>
         <dependency>
            <groupId>org.springframework.boot</groupId>
@@ -20,8 +25,8 @@
         </dependency>
         <dependency>
             <groupId>org.devefx.thymeleaf</groupId>
-            <artifactId>thymeleaf-fastmarker-dialect</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <artifactId>thymeleaf-fastmarker-spring-boot-starter</artifactId>
+            <version>${thymeleaf-fastmarker.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.nekohtml</groupId>

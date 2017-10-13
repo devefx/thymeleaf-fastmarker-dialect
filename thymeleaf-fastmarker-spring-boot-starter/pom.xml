@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.devefx.thymeleaf</groupId>
-    <artifactId>thymeleaf-fastmarker-dialect</artifactId>
+    <artifactId>thymeleaf-fastmarker-spring-boot-starter</artifactId>
     <version>1.0.0-alphal</version>
-    <name>thymeleaf-fastmarker-dialect</name>
+    <name>thymeleaf-fastmarker-spring-boot-starter</name>
     <url>https://github.com/devefx/thymeleaf-fastmarker-dialect</url>
     <licenses>
         <license>
@@ -38,19 +38,29 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.7</java.version>
+        <thymeleaf-fastmarker.version>1.0.0-alphal</thymeleaf-fastmarker.version>
+        <spring-boot.version>1.5.3.RELEASE</spring-boot.version>
     </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
-            <groupId>org.thymeleaf</groupId>
-            <artifactId>thymeleaf</artifactId>
-            <version>2.1.4.RELEASE</version>
-            <scope>compile</scope>
+            <groupId>org.devefx.thymeleaf</groupId>
+            <artifactId>thymeleaf-fastmarker-dialect</artifactId>
+            <version>${thymeleaf-fastmarker.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.thymeleaf</groupId>
-            <artifactId>thymeleaf-testing</artifactId>
-            <version>2.1.4.RELEASE</version>
-            <scope>test</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
     </dependencies>
     <build>
