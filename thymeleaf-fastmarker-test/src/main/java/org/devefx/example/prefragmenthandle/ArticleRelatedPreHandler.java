@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.devefx.example.model.Article;
 import org.devefx.example.service.ArticleService;
 import org.devefx.thymeleaf.PreFragmentHandler;
+import org.devefx.thymeleaf.PreFragmentHandlerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.AbstractContext;
@@ -26,7 +29,8 @@ public class ArticleRelatedPreHandler implements PreFragmentHandler {
     }
 
     @Override
-    public void handle(Map<String, Object> parameters, IContext context) {
+    public void handle(Map<String, Object> parameters, IContext context)
+            throws PreFragmentHandlerException {
         int articleId = (int) parameters.get("id");
         
         List<Article> articles = articleService.findRecommends(articleId);
@@ -35,6 +39,10 @@ public class ArticleRelatedPreHandler implements PreFragmentHandler {
         ctx.setVariable("articles", articles);
         
         System.out.println("ArticleRelatedPreHandler执行数据库操作次数：" + (count.getAndIncrement()));
+        
+        if (articleId > 10) {
+            throw new PreFragmentHandlerException(HttpServletResponse.SC_NOT_FOUND);
+        }
     }
 
 }

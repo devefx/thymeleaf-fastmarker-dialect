@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.devefx.thymeleaf.PreFragmentHandler;
+import org.devefx.thymeleaf.PreFragmentHandlerException;
 import org.devefx.thymeleaf.context.PreFragmentHandlerContent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.ConversionService;
@@ -37,6 +38,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.ProcessingContext;
 import org.thymeleaf.dialect.IDialect;
 import org.thymeleaf.exceptions.ConfigurationException;
+import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.fragment.ChainedFragmentSpec;
 import org.thymeleaf.fragment.IFragmentSpec;
 import org.thymeleaf.spring4.context.SpringWebContext;
@@ -302,7 +304,14 @@ public class FastMarkerThymeleafView extends AbstractThymeleafView {
             response.setCharacterEncoding(templateCharacterEncoding);
         }
         
-        viewTemplateEngine.process(templateName, context, templateFragmentSpec, response.getWriter());
+        try {
+            viewTemplateEngine.process(templateName, context, templateFragmentSpec, response.getWriter());
+        } catch (final TemplateProcessingException e) {
+            if (e.getCause() instanceof PreFragmentHandlerException) {
+                final PreFragmentHandlerException ex = (PreFragmentHandlerException) e.getCause();
+                response.sendError(ex.getStatusCode(), ex.getMessage());
+            }
+        }
         
     }
 

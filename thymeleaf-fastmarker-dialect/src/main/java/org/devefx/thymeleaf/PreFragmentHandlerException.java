@@ -16,14 +16,24 @@
 
 package org.devefx.thymeleaf;
 
-import java.util.Map;
+public class PreFragmentHandlerException extends RuntimeException {
 
-import org.thymeleaf.context.IContext;
+    private static final long serialVersionUID = 5487044170720058523L;
 
-public interface PreFragmentHandler {
+    private int statusCode;
     
-    String getFileNameExpression();
-
-    void handle(Map<String, Object> parameters, IContext context) throws PreFragmentHandlerException;
+    public PreFragmentHandlerException(int statusCode) {
+        super();
+        this.statusCode = statusCode;
+    }
+    
+    public PreFragmentHandlerException(String message, int statusCode) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+    
+    public int getStatusCode() {
+        return statusCode;
+    }
     
 }
