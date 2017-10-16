@@ -26,14 +26,12 @@ public class ArticleServiceImpl implements ArticleService {
     
     @Override
     public int saveOrUpdate(Article article) {
-        // TODO Auto-generated method stub
-        return 0;
+        return articleMapper.saveOrUpdate(article);
     }
 
     @Override
     public int remove(Article article) {
-        // TODO Auto-generated method stub
-        return 0;
+        return articleMapper.remove(article);
     }
 
 }

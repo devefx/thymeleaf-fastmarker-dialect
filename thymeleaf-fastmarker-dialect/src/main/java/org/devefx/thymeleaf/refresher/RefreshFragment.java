@@ -14,16 +14,28 @@
  * limitations under the License.
  */
 
-package org.devefx.thymeleaf.resourceresolver;
+package org.devefx.thymeleaf.refresher;
 
-import org.thymeleaf.Arguments;
-import org.thymeleaf.resourceresolver.IResourceResolver;
-import org.thymeleaf.templatewriter.ITemplateWriter;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface FastmarkerResourceResolver extends IResourceResolver {
-
-    void writeFragment(String resourceName, Arguments arguments, ITemplateWriter writer);
+@Inherited
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface RefreshFragment {
     
-    boolean deleteFragment(String resourceName);
+    String name();
     
+    Argument[] arguments() default {};
+    
+    public @interface Argument {
+        
+        String name();
+        
+        String value();
+        
+    }
 }

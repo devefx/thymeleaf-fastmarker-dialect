@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package org.devefx.thymeleaf.resourceresolver;
+package org.devefx.thymeleaf.refresher.interceptor;
 
-import org.thymeleaf.Arguments;
-import org.thymeleaf.resourceresolver.IResourceResolver;
-import org.thymeleaf.templatewriter.ITemplateWriter;
+import java.lang.reflect.Method;
 
-public interface FastmarkerResourceResolver extends IResourceResolver {
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
 
-    void writeFragment(String resourceName, Arguments arguments, ITemplateWriter writer);
-    
-    boolean deleteFragment(String resourceName);
+public class RefreshMethodInterceptor implements MethodInterceptor {
+
+    @Override
+    public Object intercept(Object object, Method method, Object[] args,
+            MethodProxy proxy) throws Throwable {
+        // FIXME 
+        Object result = proxy.invokeSuper(object, args);
+        
+        return result;
+    }
     
 }

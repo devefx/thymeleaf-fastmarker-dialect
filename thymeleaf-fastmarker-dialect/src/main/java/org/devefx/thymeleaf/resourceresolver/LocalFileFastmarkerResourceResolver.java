@@ -125,4 +125,13 @@ public class LocalFileFastmarkerResourceResolver implements FastmarkerResourceRe
         }
         
     }
+    
+    @Override
+    public boolean deleteFragment(String resourceName) {
+        File file = new File(resourceName);
+        if (file.exists()) {
+            return file.delete();
+        }
+        return true;
+    }
 }
