@@ -16,26 +16,38 @@
 
 package org.devefx.thymeleaf.refresher.interceptor.spring;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import org.devefx.thymeleaf.refresher.interceptor.MethodInterceptorUtils;
+import org.devefx.thymeleaf.refresher.RefreshFragment;
 import org.springframework.aop.support.StaticMethodMatcherPointcutAdvisor;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.annotation.AnnotationUtils;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "unchecked"})
 public class RefreshMethodSourceAdvisor extends StaticMethodMatcherPointcutAdvisor implements ApplicationContextAware {
 
-   @Override
-   public void setApplicationContext(ApplicationContext applicationContext)
+    private static final Class<? extends Annotation>[] FASK_ANNOTATION_CLASSES = new Class[] {
+        RefreshFragment.class
+    };
+    
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext)
          throws BeansException {
-      setAdvice(new AopAllianceAnnotationsRefreshMethodInterceptor(applicationContext));
-   }
+       setAdvice(new AopAllianceAnnotationsRefreshMethodInterceptor(applicationContext));
+    }
    
-   @Override
-   public boolean matches(Method method, Class<?> targetClass) {
-      return MethodInterceptorUtils.matches(method, targetClass);
-   }
+    @Override
+    public boolean matches(Method method, Class<?> targetClass) {
+        for(Class<? extends Annotation> annClass : FASK_ANNOTATION_CLASSES) {
+            Annotation a = AnnotationUtils.findAnnotation(method, annClass);
+            if (a != null) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

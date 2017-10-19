@@ -18,17 +18,40 @@ package org.devefx.thymeleaf.refresher.interceptor;
 
 import java.lang.reflect.Method;
 
+import org.devefx.thymeleaf.context.PreFragmentHandlerContent;
+import org.devefx.thymeleaf.refresher.fragment.FragmentRefresh;
+import org.devefx.thymeleaf.refresher.fragment.FragmentRefreshProcessor;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.util.Validate;
+
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
 public class RefreshMethodInterceptor implements MethodInterceptor {
 
+    private final TemplateEngine templateEngine;
+    
+    private PreFragmentHandlerContent preFragmentHandlerContent;
+    
+    public RefreshMethodInterceptor(TemplateEngine templateEngine) {
+        Validate.notNull(templateEngine, "templateEngine must con't be null.");
+        this.templateEngine = templateEngine;
+    }
+    
     @Override
     public Object intercept(Object object, Method method, Object[] args,
             MethodProxy proxy) throws Throwable {
-        // FIXME 
-        Object result = proxy.invokeSuper(object, args);
         
+        final Object result = proxy.invokeSuper(object, args);
+        
+        final FragmentRefresh fragmentRefresh = FragmentRefreshProcessor.computeFragmentRefreshSpec(
+                this.templateEngine, this.preFragmentHandlerContent, method, args, result);
+        
+        if (fragmentRefresh != null) {
+            
+            fragmentRefresh.refresh();
+            
+        }
         return result;
     }
     

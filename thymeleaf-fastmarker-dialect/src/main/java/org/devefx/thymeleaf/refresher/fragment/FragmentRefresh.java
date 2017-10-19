@@ -15,26 +15,27 @@ import org.thymeleaf.standard.expression.IStandardExpressionParser;
 import org.thymeleaf.standard.expression.StandardExpressions;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 import org.thymeleaf.templateresolver.TemplateResolution;
+import org.thymeleaf.util.Validate;
 
 public class FragmentRefresh {
     
     private static final String OPERATOR = "|";
     
-    private TemplateEngine templateEngine;
+    private final TemplateEngine templateEngine;
     
-    private PreFragmentHandler preFragmentHandler;
+    private final PreFragmentHandler preFragmentHandler;
     
-    private IContext context;
+    private final IContext context;
     
-    public void setTemplateEngine(TemplateEngine templateEngine) {
-        this.templateEngine = templateEngine;
-    }
-    
-    public void setPreFragmentHandler(PreFragmentHandler preFragmentHandler) {
+    public FragmentRefresh(final PreFragmentHandler preFragmentHandler,
+            final TemplateEngine templateEngine, final IContext context) {
+        
+        Validate.notNull(preFragmentHandler, "preFragmentHandler must con't be null.");
+        Validate.notNull(preFragmentHandler, "templateEngine must con't be null.");
+        Validate.notNull(context, "context must con't be null.");
+        
         this.preFragmentHandler = preFragmentHandler;
-    }
-    
-    public void setContext(IContext context) {
+        this.templateEngine = templateEngine;
         this.context = context;
     }
     

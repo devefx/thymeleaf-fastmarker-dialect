@@ -16,11 +16,17 @@
 
 package org.devefx.thymeleaf.refresher.interceptor.spring;
 
+import java.lang.reflect.Method;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.devefx.thymeleaf.context.PreFragmentHandlerContent;
+import org.devefx.thymeleaf.refresher.fragment.FragmentRefresh;
+import org.devefx.thymeleaf.refresher.fragment.FragmentRefreshProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.thymeleaf.TemplateEngine;
 
 public class AopAllianceAnnotationsRefreshMethodInterceptor implements
         MethodInterceptor {
@@ -29,6 +35,10 @@ public class AopAllianceAnnotationsRefreshMethodInterceptor implements
     
     private final ApplicationContext applicationContext;
     
+    private TemplateEngine templateEngine;
+    
+    private PreFragmentHandlerContent preFragmentHandlerContent;
+    
     public AopAllianceAnnotationsRefreshMethodInterceptor(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
@@ -36,7 +46,19 @@ public class AopAllianceAnnotationsRefreshMethodInterceptor implements
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         // FIXME 
-        Object result = invocation.proceed();
+        final Method method = invocation.getMethod();
+        
+        final Object[] args = invocation.getArguments();
+        
+        final Object result = invocation.proceed();
+        
+        final FragmentRefresh fragmentRefresh = FragmentRefreshProcessor.computeFragmentRefreshSpec(
+                this.templateEngine, this.preFragmentHandlerContent, method, args, result);
+        
+        if (fragmentRefresh != null) {
+            
+            fragmentRefresh.refresh();
+        }
         
         return result;
     }
